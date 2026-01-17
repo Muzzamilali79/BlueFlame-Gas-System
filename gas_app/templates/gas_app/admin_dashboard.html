@@ -1,0 +1,96 @@
+{% extends 'gas_app/base.html' %}
+
+{% block content %}
+
+<style>
+    .admin-header {
+        background-color: #1e3a8a; color: white;
+        padding: 30px; border-radius: 15px; margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.2);
+    }
+    .status-select { padding: 5px; border-radius: 5px; border: 1px solid #cbd5e1; }
+    .btn-update { background-color: #1e3a8a; color: white; border: none; padding: 5px 15px; border-radius: 5px; margin-left: 5px; }
+    .btn-update:hover { background-color: #1e40af; color: white;}
+</style>
+
+<div class="admin-header">
+    <div>
+        <h2 style="font-weight: 800; margin: 0;"><i class="fas fa-user-shield"></i> Admin Panel</h2>
+        <p style="opacity: 0.8; margin: 5px 0 0 0;">Manage orders and customer messages.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 mb-5">
+    <div class="card-body p-4">
+        <h5 class="text-primary fw-bold mb-4">Recent Orders</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Cylinder</th>
+                        <th>Address</th>
+                        <th>Current Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td class="fw-bold">{{ order.user.username }}</td>
+                        <td>{{ order.cylinder_type }} <br><small class="text-muted">Qty: {{ order.quantity }}</small></td>
+                        <td class="small">{{ order.address }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'update_order_status' order.id %}" style="display: flex; align-items: center;">
+                                {% csrf_token %}
+                                <select name="status" class="status-select">
+                                    <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="Approved" {% if order.status == 'Approved' %}selected{% endif %}>Approved</option>
+                                    <option value="Out for Delivery" {% if order.status == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+                                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                </select>
+                                <button type="submit" class="btn-update">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center">No orders yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+        <h5 class="text-warning fw-bold mb-4"><i class="fas fa-envelope"></i> Customer Messages</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th width="20%">Name / Email</th>
+                        <th>Message</th>
+                        <th width="15%">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for msg in contact_messages %}
+                    <tr>
+                        <td>
+                            <strong>{{ msg.name }}</strong><br>
+                            <small class="text-muted">{{ msg.email }}</small>
+                        </td>
+                        <td>{{ msg.message }}</td>
+                        <td class="small text-muted">{{ msg.created_at|date:"d M Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center">No messages yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

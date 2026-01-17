@@ -1,0 +1,149 @@
+{% extends 'gas_app/base.html' %}
+
+{% block content %}
+
+<style>
+    /* --- BUTTON & BILL STYLING --- */
+    .btn-confirm {
+        background-color: #f59e0b;
+        color: white;
+        font-weight: 800;
+        padding: 12px 40px; /* Padding kam ki taake size normal ho */
+        border-radius: 50px;
+        border: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+    }
+    .btn-confirm:hover {
+        background-color: #d97706 !important;
+        color: white !important;
+        transform: translateY(-3px);
+    }
+    
+    .bill-box {
+        background-color: #f1f5f9;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 5px solid #1e3a8a;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+                
+                <h2 class="text-center mb-2" style="color: #1e3a8a; font-weight: 800;">Book a Cylinder</h2>
+                <p class="text-center text-muted mb-4">Calculate your bill and place order.</p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="fw-bold">Receiver Name</label>
+                            <input type="text" name="name" class="form-control bg-light" placeholder="Full Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-bold">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control bg-light" placeholder="0300-xxxxxxx" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold text-warning"><i class="fas fa-map-marker-alt"></i> Select Area</label>
+                        <select name="area" class="form-select bg-light" required>
+                            <option value="" selected disabled>-- Select Your Area --</option>
+                            <option value="F-6">F-6</option>
+                            <option value="F-7">F-7</option>
+                            <option value="F-8">F-8</option>
+                            <option value="F-10">F-10</option>
+                            <option value="F-11">F-11</option>
+                            <option value="Blue Area">Blue Area</option>
+                            <option value="G-6">G-6</option>
+                            <option value="G-7">G-7</option>
+                            <option value="G-8">G-8</option>
+                            <option value="G-9">G-9</option>
+                            <option value="G-10">G-10</option>
+                            <option value="G-11">G-11</option>
+                            <option value="G-13">G-13</option>
+                            <option value="I-8">I-8</option>
+                            <option value="I-9">I-9</option>
+                            <option value="I-10">I-10</option>
+                            <option value="H all sectors">H (All sectors)</option>
+                            <option value="Bahria Town">Bahria Town(All phases)</option>
+                            <option value="Bahria Enclave">Bahria Enclave</option>
+                            <option value="DHA">DHA (All Phases)</option>
+                            <option value="Park View City">Park View City</option>
+                            <option value="Bara Kahu">Bara Kahu</option>
+                            <option value="Chak Shehzad">Chak Shehzad</option>
+                            <option value="Tramri">Tramri</option>
+                            <option value="Tarlai">Tarlai</option>
+                            <option value="Faizabad">Faizabad</option>
+                            <option value="Alipur">Alipur</option>
+                            <option value="khanna Pull">Khanna Pull</option>
+                            <option value="Farash Town">Farash Town</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="fw-bold">House / Street / Apartment No</label>
+                        <input type="text" name="address" class="form-control bg-light" placeholder="e.g. House 12, Street 4" required>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <label class="fw-bold">Cylinder Size</label>
+                            <select name="cylinder_type" id="cylType" class="form-select bg-light" onchange="calculateBill()">
+                                <option value="Small Domestic (6kg)">Small Domestic (6kg) - Rs. 2,000</option>
+                                <option value="Standard Home (11.8kg)" selected>Standard Home (11.8kg) - Rs. 3,500</option>
+                                <option value="Commercial (45.4kg)">Commercial (45.4kg) - Rs. 13,000</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="fw-bold">Qty</label>
+                            <input type="number" name="quantity" id="cylQty" class="form-control bg-light" value="1" min="1" max="10" onchange="calculateBill()" onkeyup="calculateBill()" required>
+                        </div>
+                    </div>
+
+                    <div class="bill-box d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="m-0 text-muted">Total Amount:</h5>
+                        <h3 class="m-0 fw-bold" style="color: #1e3a8a;" id="totalAmount">Rs. 3,500</h3>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-confirm">
+                            Confirm Order
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateBill() {
+        // Prices define kar rahe hain
+        const prices = {
+            'Small Domestic (6kg)': 2000,
+            'Standard Home (11.8kg)': 3500,
+            'Commercial (45.4kg)': 13000
+        };
+
+        // User ki selection uthana
+        let type = document.getElementById('cylType').value;
+        let qty = document.getElementById('cylQty').value;
+
+        // Price calculate karna
+        let unitPrice = prices[type] || 0;
+        let total = unitPrice * qty;
+
+        // Screen par show karna (Formatting ke sath e.g. 3,500)
+        document.getElementById('totalAmount').innerText = "Rs. " + total.toLocaleString();
+    }
+</script>
+
+{% endblock %}

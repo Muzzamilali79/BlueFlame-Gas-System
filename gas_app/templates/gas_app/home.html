@@ -1,0 +1,191 @@
+{% extends 'gas_app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* --- HERO SLIDER --- */
+    .hero-wrapper {
+        position: relative; 
+        width: 100%;
+        height: 600px;
+        overflow: hidden;
+        border-radius: 20px; margin-bottom: 80px; 
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+        background-color: #000;
+    }
+    
+    .slide { 
+        position: absolute; width: 100%; height: 100%; opacity: 0; 
+        animation: slideShow 15s infinite linear; 
+        background-size: cover; background-position: center; 
+    }
+    
+    /* SLIDER IMAGES */
+    /* Slide 1 */
+    .slide:nth-child(1) { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/slider 1.jpg" %}'); 
+        animation-delay: 0s; 
+    }
+    /* Slide 2 */
+    .slide:nth-child(2) { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/slider2.jpg" %}'); 
+        animation-delay: 5s; 
+    }
+    /* Slide 3 (New slider3.jpeg) */
+    .slide:nth-child(3) { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{% static "images/slider3.jpeg" %}'); 
+        animation-delay: 10s; 
+    }
+    
+    @keyframes slideShow { 0% { opacity: 0; transform: scale(1); } 4% { opacity: 1; } 33.33% { opacity: 1; } 37.33% { opacity: 0; } 100% { opacity: 0; transform: scale(1.05); } }
+    
+    /* --- SECTIONS CSS --- */
+    .hero-content { position: absolute; top: 50%; left: 8%; transform: translateY(-50%); color: white; z-index: 10; max-width: 650px; }
+    .hero-content h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
+    .hero-content p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; }
+    .btn-hero { background: var(--accent); color: white; padding: 15px 35px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; transition: 0.3s; }
+    .btn-hero:hover { background: #d97706; transform: translateY(-3px); }
+
+    .section-padding { padding: 60px 0; }
+    .section-title { text-align: center; margin-bottom: 60px; }
+    .section-title h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; font-weight: 800; }
+
+    /* --- PRODUCT CARDS --- */
+    .prod-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+    .prod-card { background: white; width: 300px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #e2e8f0; display: flex; flex-direction: column; position: relative; }
+    .prod-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(30, 58, 138, 0.15); border-color: var(--primary); }
+    
+    .prod-img { height: 220px; display: flex; align-items: center; justify-content: center; padding: 20px; background: #f8fafc; }
+    .prod-img img { max-width: 90%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+    
+    .prod-info { padding: 25px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .prod-info h3 { margin: 0 0 5px 0; color: var(--text-dark); font-size: 1.3rem; font-weight: 700; }
+    .price-tag { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 20px; }
+    .btn-order { display: block; width: 100%; padding: 12px; background: var(--primary); color: white; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.3s; }
+    .btn-order:hover { background: var(--primary-dark); }
+    .badge-best { position: absolute; top: 15px; right: 15px; background: var(--accent); color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 5; }
+
+    /* --- ABOUT US --- */
+    .about-wrapper { display: flex; align-items: center; gap: 50px; flex-wrap: wrap; margin-bottom: 50px; }
+    .about-text { flex: 1; min-width: 300px; }
+    
+    .about-img { 
+        flex: 1; min-width: 300px; height: 450px; 
+        background-image: url('{% static "images/Aboutus.jpg" %}'); 
+        background-size: cover; border-radius: 20px; 
+        box-shadow: 15px 15px 0 var(--accent); 
+    }
+    
+    .about-text h4 { color: var(--accent); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; font-size: 1.1rem; }
+    .about-text h2 { font-size: 2.8rem; color: var(--primary); margin: 15px 0 25px 0; line-height: 1.2; font-weight: 800; }
+    .about-text p { color: #475569; line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; text-align: justify; }
+    .stats-container { display: flex; justify-content: space-around; background: var(--primary); color: white; padding: 40px; border-radius: 20px; flex-wrap: wrap; gap: 20px; text-align: center; }
+    .stat-box h3 { font-size: 2.5rem; margin: 0; color: var(--accent); font-weight: 800; }
+    
+    .contact-wrapper { display: flex; flex-wrap: wrap; gap: 50px; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .contact-form-container form { display: flex; flex-direction: column; width: 100%; }
+    .contact-input { width: 100%; padding: 15px; border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; margin-bottom: 20px; box-sizing: border-box; font-family: inherit; display: block; }
+    .btn-send { background: var(--accent); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+    .social-icons { margin-top: 25px; display: flex; gap: 15px; }
+    .social-icon { width: 45px; height: 45px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; text-decoration: none; }
+    .social-icon:hover { background: var(--accent); transform: translateY(-3px); color: white; }
+</style>
+
+<div class="hero-wrapper" id="home">
+    <div class="slide"></div>
+    <div class="slide"></div>
+    <div class="slide"></div>
+    <div class="hero-content">
+        <h1>Reliable Gas <br>at Your Doorstep.</h1>
+        <p>Book your LPG cylinder online in seconds. Fast delivery in Islamabad.</p>
+        <a href="{% url 'book' %}" class="btn-hero">Order Now</a>
+    </div>
+</div>
+
+<div class="section-padding" id="about">
+    <div class="about-wrapper">
+        <div class="about-img"></div>
+        <div class="about-text">
+            <h4>WHO WE ARE</h4>
+            <h2>Pakistan's Most Trusted LPG Network</h2>
+            <p><strong>BlueFlame Gas</strong> was established in 2025 with a single mission: to modernize the way Islamabad cooks. We realized that local gas shops were unreliable, often selling cylinders with less gas than paid for, and without proper safety seals.</p>
+            <p>We solve this by sourcing directly from OGRA-certified plants. Every cylinder is digitally weighed before dispatch, ensuring you get exactly 11.8KG or 6KG of gas. No more guessing, no more cheating.</p>
+            <p>With a dedicated fleet of 50+ riders, we cover all major sectors of Islamabad including Bahria Town and DHA. Your safety is our priority, which is why we offer free leak checks upon delivery.</p>
+        </div>
+    </div>
+    <div class="stats-container">
+        <div class="stat-box"><h3>5k+</h3><p>Happy Customers</p></div>
+        <div class="stat-box"><h3>100%</h3><p>Safety Check</p></div>
+        <div class="stat-box"><h3>60m</h3><p>Avg Delivery</p></div>
+        <div class="stat-box"><h3>24/7</h3><p>Support</p></div>
+    </div>
+</div>
+
+<div class="section-padding" id="services" style="background-color: #f8fafc;">
+    <div class="section-title"><h2>Our Products</h2></div>
+    <div class="prod-grid">
+        
+        <div class="prod-card">
+            <div class="prod-img">
+                <img src="{% static 'images/small.jpg' %}" alt="Small Blue Cylinder">
+            </div>
+            <div class="prod-info">
+                <div><h3>Small Domestic</h3><p>6 KG Gas • Camping</p></div>
+                <div><span class="price-tag">Rs. 2,000</span><a href="{% url 'book' %}" class="btn-order">Order Now</a></div>
+            </div>
+        </div>
+        
+        <div class="prod-card">
+            <div class="badge-best">BEST SELLER</div>
+            <div class="prod-img">
+                <img src="{% static 'images/standard.jpg' %}" alt="Standard Blue Cylinder">
+            </div>
+            <div class="prod-info">
+                <div><h3>Standard Home</h3><p>11.8 KG Gas • Kitchen</p></div>
+                <div><span class="price-tag">Rs. 3,500</span><a href="{% url 'book' %}" class="btn-order">Order Now</a></div>
+            </div>
+        </div>
+        
+        <div class="prod-card">
+            <div class="prod-img">
+                <img src="{% static 'images/commercial.jpg' %}" alt="Commercial Blue Cylinder">
+            </div>
+            <div class="prod-info">
+                <div><h3>Commercial</h3><p>45.4 KG Gas • Hotels</p></div>
+                <div><span class="price-tag">Rs. 13,000</span><a href="{% url 'book' %}" class="btn-order">Order Now</a></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="section-padding" id="contact">
+    <div class="section-title"><h2>Contact Us</h2></div>
+    <div class="contact-wrapper">
+        <div style="flex:1; min-width:300px;">
+            <h3 style="color:var(--primary); margin-bottom:20px;">Get in Touch</h3>
+            <p style="margin-bottom:15px;"><strong>Address:</strong> Office 102, Blue Area, Islamabad</p>
+            <p style="margin-bottom:15px;"><strong>Phone:</strong> 051-1234567</p>
+            <p style="margin-bottom:20px;"><strong>Email:</strong> support@blueflame.com</p>
+            <h4 style="color:var(--primary); margin-top:30px;">Follow Us</h4>
+            <div class="social-icons">
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div style="flex:1; min-width:300px;" class="contact-form-container">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="name" class="contact-input" placeholder="Your Name" required>
+                <input type="email" name="email" class="contact-input" placeholder="Your Email" required>
+                <textarea name="message" class="contact-input" rows="4" placeholder="Your Message" required></textarea>
+                <button type="submit" name="contact_submit" class="btn-send">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
