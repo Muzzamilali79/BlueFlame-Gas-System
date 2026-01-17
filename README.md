@@ -60,4 +60,6 @@ BlueFlame Gas is a web-based Gas Supply Management System designed to streamline
     ```
 
 ## 👨‍💻 Developed By
-**Muzzamil Alea** BS Computer Science (Final Year Project)
+**Muzzamil Ali** 
+BS Computer Science
+FUUAST Islamabad
